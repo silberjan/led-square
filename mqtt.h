@@ -1,10 +1,10 @@
 #include <WiFiNINA.h>
-#include <PubSubClient.h>
+#include <MQTTClient.h>  
 #include <ArduinoJson.h>
 #include "arduino_secrets.h"
 
-extern WiFiClient mqttWifiClient;
-extern PubSubClient mqttClient;
+extern WiFiClient wifiClient;
+extern MQTTClient mqttClient;
 
 extern DynamicJsonDocument jsonIn;
 extern DynamicJsonDocument jsonOut;
@@ -15,13 +15,14 @@ extern unsigned long timeNowMQTT;
 
 extern bool successfulFirstMessage;
 
-
 void mqttLoop();
 
-void handleMessage(char* topic, byte* payload, unsigned int length);
+void handleMessage(String &topic, String &payload);
 
 void sendHomeAssistantConfig();
 
 void sendHomeAssistantState();
 
 void initSubscription();
+
+void mqttSetup();

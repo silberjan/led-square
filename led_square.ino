@@ -13,9 +13,9 @@ void setup()
   Serial.begin(9600);
   btn.attachClick(btnClicked);
   btn.attachDoubleClick(btnDblClicked);
-  mqttClient.setBufferSize(512);
   randomSeed(analogRead(0));
   setupFastLED();
+  mqttSetup();
 }
 
 void loop()

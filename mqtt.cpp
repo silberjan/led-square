@@ -4,13 +4,19 @@
 
 unsigned long timeNowMQTT = 0;
 
-WiFiClient mqttWifiClient;
-PubSubClient mqttClient("192.168.2.150", 1883, handleMessage, mqttWifiClient);
+MQTTClient mqttClient(512);
+WiFiClient wifiClient;
 
 DynamicJsonDocument jsonIn(1024);
 DynamicJsonDocument jsonOut(512);
 
 bool successfulFirstMessage = false;
+
+void mqttSetup()
+{
+  mqttClient.begin("192.168.2.150", 1883, wifiClient);
+  mqttClient.onMessage(handleMessage);
+}
 
 void mqttLoop()
 {
@@ -88,12 +94,12 @@ void sendHomeAssistantState()
   Serial.println(buffer);
 }
 
-void handleMessage(char *topic, byte *payload, unsigned int length)
+void handleMessage(String &topic, String &payload)
 {
   successfulFirstMessage = true;
   Serial.print("Received message ");
   Serial.println(topic);
-  if (strcmp(topic, "homeassistant/light/led-square/set") == 0)
+  if (topic == "homeassistant/light/led-square/set")
   {
     Serial.println("Received set message");
     deserializeJson(jsonIn, payload);
