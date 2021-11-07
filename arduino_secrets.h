@@ -1,0 +1,2 @@
+#define SECRET_SSID "APOLLO"
+#define SECRET_PASSWORD "#level100!"
