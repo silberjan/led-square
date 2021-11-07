@@ -9,3 +9,6 @@ int wifiStatus = 0;
 uint8_t led_r = 255;
 uint8_t led_g = 255;
 uint8_t led_b = 255;
+
+CRGB led_rgb = CRGB::White;
+CHSV led_hsv = CHSV(0, 0, 255);
