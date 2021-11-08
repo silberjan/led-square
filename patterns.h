@@ -14,7 +14,7 @@ void staticColor();
 void setupFastLED();
 void ledLoop();
 void nextPattern();
-void potiSpeed();
+void bpmMillis();
 void noise();
 void rain();
 void rainReverse();

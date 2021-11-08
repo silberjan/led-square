@@ -21,22 +21,23 @@ void ledLoop()
   {
     switch (currentPattern)
     {
-    case 0:
+    case STATIC:
       staticColor();
       break;
-    case 1:
+    case RAIN:
       rain();
       break;
-    case 2:
+    case RAIN_REVERSE:
       rainReverse();
       break;
-    case 3:
+    case GROW:
       grow();
       break;
-    case 4:
+    case FLASH:
+      bpmMillis();
       flash();
       break;
-    case 5:
+    case NOISE:
       noise();
       break;
     }
@@ -48,10 +49,7 @@ void ledLoop()
   {
     FastLED.clear(true);
   }
-
 }
-
-
 
 void staticColor()
 {
@@ -61,18 +59,8 @@ void staticColor()
   }
 }
 
-void nextPattern()
+void bpmMillis()
 {
-  currentPattern = (currentPattern + 1) % 6;
-  Serial.print("Switching to pattern ");
-  Serial.println(currentPattern);
-  char pattern[1];
-  FastLED.clear();
-}
-
-void potiSpeed()
-{
-  uint8_t bpm = map(bpm, 0, 1023, 30, 180);
   // Serial.println("BPM " + String(bpm));
   unsigned long currentMillis = millis();
   // Serial.println("Current millis " + String(currentMillis));
@@ -139,6 +127,11 @@ void grow()
 
 void fillEdge(uint8_t edge = 0, CHSV color = CHSV(0, 0, 255))
 {
+  Serial.print(led_hsv.h);
+  Serial.print(" ");
+  Serial.print(led_hsv.s);
+  Serial.print(" ");
+  Serial.println(led_hsv.v);
   int edgeLeds = NUM_LEDS / 4;
   for (int i = edgeLeds * edge; i < edgeLeds * (edge + 1); i++)
   {
@@ -173,6 +166,12 @@ void flash()
 {
   uint8_t millisFactor = 1;
 
+  Serial.println("flash");
+  Serial.print(led_hsv.h);
+  Serial.print(" ");
+  Serial.print(led_hsv.s);
+  Serial.print(" ");
+  Serial.println(led_hsv.v);
   uint8_t wave1 = cubicWaveAndPause(dilatedMillis / millisFactor, 5);
   fillEdge(0, CHSV(led_hsv.h, led_hsv.s, wave1));
 

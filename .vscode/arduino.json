@@ -1,5 +1,6 @@
 {
-    "port": "COM5",
-    "board": "arduino:samd:mkrwifi1010",
-    "sketch": "led_square.ino"
+  "port": "/dev/ttyACM0",
+  "board": "arduino:samd:mkrwifi1010",
+  "sketch": "led-square.ino",
+  "output": "./output"
 }
