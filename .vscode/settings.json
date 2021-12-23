@@ -1,8 +1,0 @@
-{
-  "cSpell.enabled": false,
-  "files.associations": {
-    "*.geojson": "json",
-    "istream": "cpp",
-    "ostream": "cpp"
-  }
-}

@@ -17,42 +17,31 @@ void setupFastLED()
 
 void ledLoop()
 {
-  // if (led_on)
-  // {
-  //   switch (currentPattern)
-  //   {
-  //   case 0:
-  //     noise();
-  //     break;
-  //   case 1:
-  //     rain();
-  //     break;
-  //   case 2:
-  //     rainReverse();
-  //     break;
-  //   case 3:
-  //     grow();
-  //     break;
-  //   case 4:
-  //     flash();
-  //     break;
-  //   case 5:
-  //     metronome();
-  //     break;
-  //   }
-
-  //   potiSpeed();
-
-  //   FastLED.show();
-  // }
-  // else
-  // {
-  //   FastLED.clear(true);
-  // }
-
   if (led_on)
   {
-    staticColor();
+    switch (currentPattern)
+    {
+    case STATIC:
+      staticColor();
+      break;
+    case RAIN:
+      rain();
+      break;
+    case RAIN_REVERSE:
+      rainReverse();
+      break;
+    case GROW:
+      grow();
+      break;
+    case FLASH:
+      bpmMillis();
+      flash();
+      break;
+    case NOISE:
+      noise();
+      break;
+    }
+
     FastLED.setBrightness(led_brightness);
     FastLED.show();
   }
@@ -66,22 +55,12 @@ void staticColor()
 {
   for (int i = 0; i < NUM_LEDS; i++)
   {
-    leds[i] = CRGB(led_r, led_g, led_b);
+    leds[i] = led_rgb;
   }
 }
 
-void nextPattern()
+void bpmMillis()
 {
-  currentPattern = (currentPattern + 1) % 6;
-  Serial.print("Switching to pattern ");
-  Serial.println(currentPattern);
-  char pattern[1];
-  FastLED.clear();
-}
-
-void potiSpeed()
-{
-  uint8_t bpm = map(bpm, 0, 1023, 30, 180);
   // Serial.println("BPM " + String(bpm));
   unsigned long currentMillis = millis();
   // Serial.println("Current millis " + String(currentMillis));
@@ -116,20 +95,18 @@ void noise()
 void rain()
 {
   uint8_t pos = map(beat8(15, 0), 0, 255, 0, NUM_LEDS - 1);
-  int rainColor = CRGB::BlueViolet;
-  leds[pos] = rainColor;
-  leds[(pos + NUM_LEDS / 3) % NUM_LEDS] = rainColor;
-  leds[(pos + NUM_LEDS / 3 * 2) % NUM_LEDS] = rainColor;
+  leds[pos] = led_rgb;
+  leds[(pos + NUM_LEDS / 3) % NUM_LEDS] = led_rgb;
+  leds[(pos + NUM_LEDS / 3 * 2) % NUM_LEDS] = led_rgb;
   fadeToBlackBy(leds, NUM_LEDS, 1);
 }
 
 void rainReverse()
 {
   uint8_t pos = NUM_LEDS - 1 - map(beat8(15, 0), 0, 255, 0, NUM_LEDS - 1);
-  int rainColor = CRGB::BlueViolet;
-  leds[pos] = rainColor;
-  leds[(pos + NUM_LEDS / 3) % NUM_LEDS] = rainColor;
-  leds[(pos + NUM_LEDS / 3 * 2) % NUM_LEDS] = rainColor;
+  leds[pos] = led_rgb;
+  leds[(pos + NUM_LEDS / 3) % NUM_LEDS] = led_rgb;
+  leds[(pos + NUM_LEDS / 3 * 2) % NUM_LEDS] = led_rgb;
   fadeToBlackBy(leds, NUM_LEDS, 1);
 }
 
@@ -150,6 +127,11 @@ void grow()
 
 void fillEdge(uint8_t edge = 0, CHSV color = CHSV(0, 0, 255))
 {
+  Serial.print(led_hsv.h);
+  Serial.print(" ");
+  Serial.print(led_hsv.s);
+  Serial.print(" ");
+  Serial.println(led_hsv.v);
   int edgeLeds = NUM_LEDS / 4;
   for (int i = edgeLeds * edge; i < edgeLeds * (edge + 1); i++)
   {
@@ -173,25 +155,32 @@ uint8_t cubicWaveAndPause(unsigned long in, uint8_t pauseFactor = 1)
 void metronome()
 {
   uint8_t wave = cubicWaveAndPause(dilatedMillis, 1);
-  fillEdge(0, CHSV(0, 0, wave));
-  fillEdge(1, CHSV(0, 0, wave));
-  fillEdge(2, CHSV(0, 0, wave));
-  fillEdge(3, CHSV(0, 0, wave));
+
+  fillEdge(0, CHSV(led_hsv.h, led_hsv.s, wave));
+  fillEdge(1, CHSV(led_hsv.h, led_hsv.s, wave));
+  fillEdge(2, CHSV(led_hsv.h, led_hsv.s, wave));
+  fillEdge(3, CHSV(led_hsv.h, led_hsv.s, wave));
 }
 
 void flash()
 {
   uint8_t millisFactor = 1;
 
+  Serial.println("flash");
+  Serial.print(led_hsv.h);
+  Serial.print(" ");
+  Serial.print(led_hsv.s);
+  Serial.print(" ");
+  Serial.println(led_hsv.v);
   uint8_t wave1 = cubicWaveAndPause(dilatedMillis / millisFactor, 5);
-  fillEdge(0, CHSV(0, 0, wave1));
+  fillEdge(0, CHSV(led_hsv.h, led_hsv.s, wave1));
 
   uint8_t wave2 = cubicWaveAndPause((dilatedMillis + 256 * 1.5) / millisFactor, 4);
-  fillEdge(1, CHSV(0, 0, wave2));
+  fillEdge(1, CHSV(led_hsv.h, led_hsv.s, wave2));
 
   uint8_t wave3 = cubicWaveAndPause((dilatedMillis + 256 * 0.5) / millisFactor, 5);
-  fillEdge(2, CHSV(0, 0, wave3));
+  fillEdge(2, CHSV(led_hsv.h, led_hsv.s, wave3));
 
   uint8_t wave4 = cubicWaveAndPause((dilatedMillis + 256 * 2.5) / millisFactor, 3);
-  fillEdge(3, CHSV(0, 0, wave4));
+  fillEdge(3, CHSV(led_hsv.h, led_hsv.s, wave4));
 }

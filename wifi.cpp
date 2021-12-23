@@ -10,7 +10,7 @@ void wifiLoop()
   if (millis() > timeNowWifi + period)
   {
     wifiStatus = WiFi.status();
-    printWifiData();
+    // printWifiData();
     timeNowWifi = millis();
     if (wifiStatus != WL_CONNECTED)
     {
