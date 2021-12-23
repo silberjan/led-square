@@ -11,7 +11,9 @@ unsigned long lastLoopMillis = 0;
 void setupFastLED()
 {
   FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
-  FastLED.setBrightness(255);
+  FastLED.setBrightness(led_brightness);
+  staticColor();
+  FastLED.show();
   lastLoopMillis = millis();
 }
 
@@ -39,6 +41,9 @@ void ledLoop()
       break;
     case NOISE:
       noise();
+      break;
+    case PULSE:
+      pulse();
       break;
     }
 
@@ -90,6 +95,14 @@ void noise()
     uint8_t hue = map(noise, 50, 190, 0, 255);
     leds[i] = CHSV(hue, 255, 255);
   }
+}
+
+uint8_t pulseSin;
+
+void pulse()
+{
+  pulseSin = beatsin8(30, 0, 128);
+  led_brightness = pulseSin;
 }
 
 void rain()

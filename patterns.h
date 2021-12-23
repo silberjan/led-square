@@ -22,3 +22,4 @@ void grow();
 void fillEdge(uint8_t edge, CHSV color);
 void metronome();
 void flash();
+void pulse();

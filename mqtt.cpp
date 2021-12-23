@@ -85,6 +85,8 @@ void initSubscription()
   {
     sendHomeAssistantConfig();
     sendHomeAssistantState();
+    setColor(0, 255, 0);
+    currentPattern = STATIC;
   }
 }
 
@@ -142,15 +144,14 @@ void handleMessage(String &topic, String &payload)
     }
     if (jsonIn["brightness"])
     {
-      led_brightness = jsonIn["brightness"];
+      led_brightness = (uint8_t)jsonIn["brightness"] / 2;
     }
     if (jsonIn["color"])
     {
       led_r = jsonIn["color"]["r"];
       led_g = jsonIn["color"]["g"];
       led_b = jsonIn["color"]["b"];
-      led_rgb = CRGB(led_r, led_g, led_b);
-      led_hsv = rgb2hsv_approximate(led_rgb);
+      setColor(led_r, led_g, led_b);
     }
     if (jsonIn["effect"])
     {

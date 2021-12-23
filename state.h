@@ -21,8 +21,11 @@ enum led_pattern_id
   RAIN_REVERSE,
   GROW,
   NOISE,
-  FLASH
+  FLASH,
+  PULSE
 };
 extern led_pattern_id currentPattern;
 
 char *getPattenName();
+
+void setColor(uint8_t r, uint8_t g, uint8_t b);

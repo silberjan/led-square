@@ -14,6 +14,7 @@ void wifiLoop()
     timeNowWifi = millis();
     if (wifiStatus != WL_CONNECTED)
     {
+      setColor(255, 0, 0);
       attempted = true;
       Serial.print("Attempting to connect to network: ");
       Serial.println(ssid);
@@ -24,6 +25,7 @@ void wifiLoop()
       if (attempted)
       {
         attempted = false;
+        setColor(255, 255, 0);
         Serial.println("You're connected to the network");
         Serial.println("----------------------------------------");
         printWifiData();
