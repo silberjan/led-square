@@ -101,7 +101,7 @@ uint8_t pulseSin;
 
 void pulse()
 {
-  pulseSin = beatsin8(30, 0, 128);
+  pulseSin = beatsin8(30, 0, 64);
   led_brightness = pulseSin;
 }
 

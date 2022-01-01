@@ -111,7 +111,7 @@ void sendHomeAssistantState()
   if (led_on)
   {
     jsonOut["color_mode"] = "rgb";
-    jsonOut["brightness"] = led_brightness;
+    jsonOut["brightness"] = led_brightness * 2;
     jsonOut["color"]["r"] = led_r;
     jsonOut["color"]["g"] = led_g;
     jsonOut["color"]["b"] = led_b;
