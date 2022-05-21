@@ -1,7 +1,7 @@
 #include "state.h"
 
 bool led_on = true;
-uint8_t led_brightness = 64;
+uint8_t led_brightness = 0U;
 uint8_t bpm = 120;
 int wifiStatus = 0;
 
@@ -12,7 +12,7 @@ uint8_t led_b = 255;
 CRGB led_rgb = CRGB::White;
 CHSV led_hsv = CHSV(0, 0, 255);
 
-led_pattern_id currentPattern = PULSE;
+led_pattern_id currentPattern = STATIC;
 
 void setColor(uint8_t cr, uint8_t cg, uint8_t cb)
 {

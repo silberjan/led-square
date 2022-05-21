@@ -1,6 +1,7 @@
 #include <SPI.h>
 #include "mqtt.h"
 #include "state.h"
+#include "arduino_secrets.h"
 
 unsigned long timeNowMQTT = 0;
 
@@ -68,7 +69,7 @@ void connectMqtt()
   successfulFirstMessage = false;
   Serial.print("Connecting MQTT");
   const char clientId[] = "ledsquare-0";
-  if (mqttClient.connect(clientId))
+  if (mqttClient.connect(clientId, SECRET_MQTT_USER, SECRET_MQTT_PASSWORD))
   {
     Serial.print("\nMQTT Connection successful. Client ID: ");
     Serial.println(clientId);

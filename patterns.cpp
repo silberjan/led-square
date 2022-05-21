@@ -5,7 +5,7 @@ uint8_t hue = 0;
 
 CRGB leds[NUM_LEDS];
 
-unsigned long dilatedMillis = 0;
+// unsigned long dilatedMillis = 0;
 unsigned long lastLoopMillis = 0;
 
 void setupFastLED()
@@ -36,13 +36,14 @@ void ledLoop()
       grow();
       break;
     case FLASH:
-      bpmMillis();
+      // bpmMillis();
       flash();
       break;
     case NOISE:
       noise();
       break;
     case PULSE:
+      staticColor();
       pulse();
       break;
     }
@@ -64,20 +65,20 @@ void staticColor()
   }
 }
 
-void bpmMillis()
-{
-  // Serial.println("BPM " + String(bpm));
-  unsigned long currentMillis = millis();
-  // Serial.println("Current millis " + String(currentMillis));
-  unsigned long millisSinceLast = currentMillis - lastLoopMillis;
-  // Serial.println("Millis since last " + String(millisSinceLast));
-  // one beat is 128 ticks
-  float beatFactor = (float)60 / (float)bpm * (float)1000 / (float)512;
-  // Serial.println("Beat length is" + String(beatFactor));
-  dilatedMillis += millisSinceLast / beatFactor;
-  // Serial.println("Dilated millis " + String(dilatedMillis));
-  lastLoopMillis = currentMillis;
-}
+// void bpmMillis()
+// {
+//   // Serial.println("BPM " + String(bpm));
+//   unsigned long currentMillis = millis();
+//   // Serial.println("Current millis " + String(currentMillis));
+//   unsigned long millisSinceLast = currentMillis - lastLoopMillis;
+//   // Serial.println("Millis since last " + String(millisSinceLast));
+//   // one beat is 128 ticks
+//   float beatFactor = (float)60 / (float)bpm * (float)1000 / (float)512;
+//   // Serial.println("Beat length is" + String(beatFactor));
+//   dilatedMillis += millisSinceLast / beatFactor;
+//   // Serial.println("Dilated millis " + String(dilatedMillis));
+//   lastLoopMillis = currentMillis;
+// }
 
 uint16_t x;
 int scale;
@@ -101,7 +102,7 @@ uint8_t pulseSin;
 
 void pulse()
 {
-  pulseSin = beatsin8(30, 0, 64);
+  pulseSin = beatsin8(30, 0U, 16U);
   led_brightness = pulseSin;
 }
 
@@ -165,35 +166,19 @@ uint8_t cubicWaveAndPause(unsigned long in, uint8_t pauseFactor = 1)
   }
 }
 
-void metronome()
-{
-  uint8_t wave = cubicWaveAndPause(dilatedMillis, 1);
-
-  fillEdge(0, CHSV(led_hsv.h, led_hsv.s, wave));
-  fillEdge(1, CHSV(led_hsv.h, led_hsv.s, wave));
-  fillEdge(2, CHSV(led_hsv.h, led_hsv.s, wave));
-  fillEdge(3, CHSV(led_hsv.h, led_hsv.s, wave));
-}
-
 void flash()
 {
   uint8_t millisFactor = 1;
 
-  Serial.println("flash");
-  Serial.print(led_hsv.h);
-  Serial.print(" ");
-  Serial.print(led_hsv.s);
-  Serial.print(" ");
-  Serial.println(led_hsv.v);
-  uint8_t wave1 = cubicWaveAndPause(dilatedMillis / millisFactor, 5);
+  uint8_t wave1 = cubicWaveAndPause(millis() / millisFactor, 5);
   fillEdge(0, CHSV(led_hsv.h, led_hsv.s, wave1));
 
-  uint8_t wave2 = cubicWaveAndPause((dilatedMillis + 256 * 1.5) / millisFactor, 4);
+  uint8_t wave2 = cubicWaveAndPause((millis() + 256 * 1.5) / millisFactor, 4);
   fillEdge(1, CHSV(led_hsv.h, led_hsv.s, wave2));
 
-  uint8_t wave3 = cubicWaveAndPause((dilatedMillis + 256 * 0.5) / millisFactor, 5);
+  uint8_t wave3 = cubicWaveAndPause((millis() + 256 * 0.5) / millisFactor, 5);
   fillEdge(2, CHSV(led_hsv.h, led_hsv.s, wave3));
 
-  uint8_t wave4 = cubicWaveAndPause((dilatedMillis + 256 * 2.5) / millisFactor, 3);
+  uint8_t wave4 = cubicWaveAndPause((millis() + 256 * 2.5) / millisFactor, 3);
   fillEdge(3, CHSV(led_hsv.h, led_hsv.s, wave4));
 }
